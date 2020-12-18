@@ -2,7 +2,7 @@
 
 Back-end for Advanced Web Application final project
 
-Deployed on [Heroku](https://online-academi.herokuapp.com)
+Deployed at [Heroku](https://online-academi.herokuapp.com)
 
 ## Team member
 
@@ -19,7 +19,8 @@ Deployed on [Heroku](https://online-academi.herokuapp.com)
 ```terminal
 $ git clone https://github.com/tlhnhi/online-academy-backend
 $ cd online-academy-backend
-$ npm i       // npm install pacakges
-$ npm run dev // run it locally
-// http://localhost:8000 be available
+$ npm i
+$ npm run dev
 ```
+
+http://localhost:8000 will be available
