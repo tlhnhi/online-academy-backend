@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-if(process.env.NODE_ENV != 'production'){
+if (process.env.NODE_ENV != 'production') {
   dotenv.config({ path: path.resolve(__dirname, '.env') });
 }
 
@@ -10,4 +10,4 @@ module.exports = {
   mongoose: {
     uri: process.env.MONGODB_URI || 'mongodb://localhost/mern'
   },
-}
+};

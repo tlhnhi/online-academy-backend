@@ -3,27 +3,42 @@ import bcrypt from 'bcrypt-nodejs';
 
 // Define the model
 const Schema = new mongoose.Schema({
-    name: String,
     email: {
         type: String,
         unique: true,
-        lowercase: true
+        lowercase: true,
+        required: true
     },
-    emailVerified: {
+    verified: {
         type: Boolean,
         default: false
     },
-    password: String,
+    password: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    favorite: {
+        type: [mongoose.Schema.ObjectId],
+        default: []
+    },
+    enrolled: {
+        type: [mongoose.Schema.ObjectId],
+        default: []
+    }
 })
 
-Schema.pre('save', function(next){
+Schema.pre('save', function(next) {
     // get access to user model, then we can use user.email, user.password
     const user = this;
 
-    bcrypt.genSalt(10, function(err, salt){
+    bcrypt.genSalt(10, function(err, salt) {
         if (err) { return next(err) }
 
-        bcrypt.hash(user.password, salt, null, function(err, hash){
+        bcrypt.hash(user.password, salt, null, function(err, hash) {
             if (err) { return next(err); }
 
             user.password = hash;
@@ -34,8 +49,8 @@ Schema.pre('save', function(next){
 
 // Make use of methods for comparedPassword
 Schema.methods.comparedPassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, good){
-        if (err ) { return cb(err)}
+    bcrypt.compare(candidatePassword, this.password, function(err, good) {
+        if (err) { return cb(err) }
         cb(null, good);
     })
 }

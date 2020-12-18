@@ -8,17 +8,26 @@ export default {
         if (!email || !password) {
             return res
                 .status(422)
-                .send({error: 'You must provide email and password.'});
+                .json({
+                    success: false,
+                    message: 'You must provide email and password.'
+                });
         }
         UserModel
             .findOne({
                 email: email
             }, function (err, existingUser) {
-                if (err) return res.status(422).send(err);
+                if (err) return res.status(422).json({
+                    success: false,
+                    message: err
+                });
                 if (existingUser) {
                     return res
                         .status(422)
-                        .send({error: 'Email is in use'});
+                        .json({
+                            success: false,
+                            message: 'Email is in use'
+                        });
                 }
                 const user = new UserModel({
                     name: name,
@@ -45,23 +54,35 @@ export default {
         if (!email || !password) {
             return res
                 .status(422)
-                .send({error: 'You must provide email and password.'});
+                .json({
+                    success: false,
+                    error: 'You must provide email and password.'
+                });
         }
         UserModel
             .findOne({
                 email: email
             }, function (err, existingUser) {
                 if (err || !existingUser) {
-                    return res.status(401).send(err || {error: "User Not Found"})
+                    return res.status(401).json({
+                        status: false,
+                        message: err['_message'] || "User Not Found"
+                    })
                 }
                 if (existingUser) {
                     existingUser.comparedPassword(password, function(err, good) {
                         if (err || !good) {
-                                return res.status(401).send(err || 'User not found')
+                                return res.status(401).json({
+                                    status: false,
+                                    message: err['_message'] || "User Not Found"
+                                })
                             }
     
-                            res.send({
-                                token: token.generateToken(existingUser)
+                            res.json({
+                                success: true,
+                                data: {
+                                    token: token.generateToken(existingUser)
+                                }
                             })
                     })
                 }
