@@ -1,5 +1,6 @@
 import token from '../util/token';
 import UserModel from '../user/model';
+require('babel-polyfill'); // allow async
 
 export default {
     signup : (req, res, next) => {
@@ -66,7 +67,7 @@ export default {
                 if (err || !existingUser) {
                     return res.status(401).json({
                         status: false,
-                        message: err['_message'] || "User Not Found"
+                        message: err['_message'] || "Incorrect Email or Password"
                     })
                 }
                 if (existingUser) {
@@ -74,7 +75,7 @@ export default {
                         if (err || !good) {
                                 return res.status(401).json({
                                     status: false,
-                                    message: err['_message'] || "User Not Found"
+                                    message: err || "Incorrect Email or Password"
                                 })
                             }
     

@@ -20,7 +20,7 @@ export default {
           if (err || !user) {
               return res.status(404).json({
                   success: false,
-                  message: err || 'middleware User not found!!!'
+                  message: err || 'Please re-check your token!!!'
               });
           }
           delete user.password;

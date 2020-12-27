@@ -9,6 +9,8 @@ import Middlewares from './api/middlewares';
 import Authentication from './api/authentication';
 import UserRouter from './user/router';
 
+import CategoryRouter from './category/router';
+
 if (!process.env.JWT_SECRET) {
     const err = new Error('No JWT_SECRET in env variable');
     console.error(err);
@@ -37,6 +39,8 @@ app.post('/signup', Authentication.signup)
 app.post('/signin', Authentication.signin)
 app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'success': true }))
 app.use('/user', Middlewares.loginRequired, UserRouter)
+
+app.use('/category', CategoryRouter);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);
