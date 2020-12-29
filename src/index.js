@@ -7,9 +7,10 @@ import cors from 'cors';
 import config from './config';
 import Middlewares from './api/middlewares';
 import Authentication from './api/authentication';
-import UserRouter from './user/router';
 
+import UserRouter from './user/router';
 import CategoryRouter from './category/router';
+import CourseRouter from './course/routers/admin';
 
 if (!process.env.JWT_SECRET) {
     const err = new Error('No JWT_SECRET in env variable');
@@ -31,16 +32,17 @@ mongoose.Promise = global.Promise;
 // App Setup
 app.use(cors());
 app.use(morgan('dev'));
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.get('/ping', (req, res) => res.send('pong'))
-app.get('/', (req, res) => res.json({'connect': 'success'}))
-app.post('/signup', Authentication.signup)
-app.post('/signin', Authentication.signin)
-app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'success': true }))
-app.use('/user', Middlewares.loginRequired, UserRouter)
+app.get('/ping', (req, res) => res.send('pong'));
+app.get('/', (req, res) => res.json({'connect': 'success'}));
+app.post('/signup', Authentication.signup);
+app.post('/signin', Authentication.signin);
+app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'success': true }));
 
+app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', CategoryRouter);
+app.use('/course', CourseRouter);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);

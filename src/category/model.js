@@ -10,7 +10,7 @@ const Schema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         default: null
     }
-}, {collation: { locale: 'vi' }})
+}, { collation: { locale: 'vi' } })
 
 // Export the model
 export default mongoose.model('Category', Schema);

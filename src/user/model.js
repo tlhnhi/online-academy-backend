@@ -21,6 +21,10 @@ const Schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    avatar: {
+        type: String,
+        default: null
+    },
     balance: {
         type: Number,
         default: 1000000
@@ -33,7 +37,7 @@ const Schema = new mongoose.Schema({
         type: [mongoose.Schema.ObjectId],
         default: []
     }
-}, {collation: { locale: 'vi' }})
+}, { collation: { locale: 'vi' } })
 
 Schema.pre('save', function(next) {
     // get access to user model, then we can use user.email, user.password
