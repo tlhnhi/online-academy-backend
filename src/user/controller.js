@@ -9,7 +9,7 @@ export default {
             });
             const userId = req.user._id;
             let user = await UserModel.findById(userId);
-            user.password = req.body.newPassword || req.body.password;
+            user.password = req.body.newPassword || user.password;
             
             await user.save();
             return res.status(200).json(user);

@@ -23,10 +23,7 @@ export default {
                   message: err || 'Please re-check your token!!!'
               });
           }
-          let userObj = user.toJSON();
-          delete userObj.password;
-          delete userObj.__v;
-          req.user = userObj;
+          req.user = user;
           next();
         })
     })
