@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 
-export const ProductInList = mongoose.Schema({
+export const RatingSchema = mongoose.Schema({
     user_id: {
         type: String,
         ref: 'User',
-        required: true
+        required: true,
+        unique: true
     },
     comment: {
         type: String,

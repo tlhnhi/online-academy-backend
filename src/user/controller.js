@@ -12,7 +12,10 @@ export default {
             user.password = req.body.newPassword || user.password;
             
             await user.save();
-            return res.status(200).json(user);
+            return res.status(200).json({
+                "success": true,
+                "data": "Change password successfully."
+            });
         })
     },
     updateProfile: async (req, res, next) => {
@@ -22,6 +25,9 @@ export default {
         if (req.body.avatar) user.avatar = req.body.avatar;
         
         await user.save();
-        return res.status(200).json(user);
+        return res.status(200).json({
+            "success": true,
+            "data": "Update profile successfully."
+        });
     },
 }

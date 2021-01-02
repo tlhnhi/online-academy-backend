@@ -53,4 +53,4 @@ const Schema = new mongoose.Schema({
 }, { collation: { locale: 'vi' } })
 
 // Export the model
-export default mongoose.model('RetailerRecycle', Schema);
+export default mongoose.model('Course', Schema);

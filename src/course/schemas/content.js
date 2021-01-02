@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export const ProductInList = mongoose.Schema({
+export const ContentSchema = mongoose.Schema({
     title: {
         type: String,
         required: true
