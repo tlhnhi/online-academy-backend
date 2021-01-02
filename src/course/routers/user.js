@@ -7,7 +7,7 @@ const router = require('express').Router();
 router.get('/enroll', async (req, res) => {
     try {
         const userId = req.user._id;
-        let user = await UserModel.findById(userId);
+        let user = await UserModel.findById(userId).select("enrolled");
         let courses = [];
         await Promise.all(user.enrolled.map(async id => {
             let course = await CourseModel.findOne({"_id": id});
@@ -26,7 +26,11 @@ router.get('/enroll/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         let enrolled = false;
-        if (req.user.enrolled.includes(id)) enrolled = true;
+
+        const userId = req.user._id;
+        let user = await UserModel.findById(userId).select("enrolled");
+        
+        if (user.enrolled.includes(id)) enrolled = true;
         return sendResponse(res, true, enrolled);
     }
     catch (error) {

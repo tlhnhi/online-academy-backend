@@ -43,8 +43,8 @@ app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'succe
 
 app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', CategoryRouter);
+app.use('/course', Middlewares.loginRequired, UserCourseRouter);
 app.use('/course', AdminCourseRouter);
-app.use('/course/user', Middlewares.loginRequired, UserCourseRouter);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);
