@@ -35,7 +35,6 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.get('/ping', (req, res) => res.send('pong'));
 app.get('/', (req, res) => res.json({'connect': 'success'}));
 app.post('/signup', Authentication.signup);
 app.post('/signin', Authentication.signin);
@@ -44,7 +43,7 @@ app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'succe
 app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', CategoryRouter);
 app.use('/course', Middlewares.loginRequired, UserCourseRouter);
-app.use('/course', AdminCourseRouter);
+app.use('/courses', AdminCourseRouter);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);
