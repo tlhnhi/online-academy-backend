@@ -30,8 +30,8 @@ router.post('/', async (req, res) => {
             avatar = req.body.avatar || null,
             describe = req.body.describe || null,
             detail = req.body.detail || null,
-            price = req.body.pice || null,
-            discount = req.body.discount || null,
+            price = req.body.pice || 0,
+            discount = req.body.discount || 0,
             category_id = req.body.category_id || null,
             lecturer_id = req.body.lecturer_id || null,
             content = req.body.content || null;
@@ -51,6 +51,11 @@ router.put('/:id', async (req, res) => {
         const id = req.params.id || null;
         const course = await CourseModel.findOne({"_id": id});
 
+        let discount = req.body.discount;
+        if (discount < 0 || discount > 1)
+            return sendResponse(res, false, "Discount value should be between 0 to 1.");
+        course.discount = discount;
+
         // if (req.user._id != course.lecturer_id)
         //     return sendResponse(res, false, "Permission denied.");
 
@@ -58,8 +63,7 @@ router.put('/:id', async (req, res) => {
         course.avatar = req.body.avatar || course.avatar;
         course.describe = req.body.describe || course.describe,
         course.detail = req.body.detail || course.detail,
-        course.price = req.body.pice || course.price,
-        course.discount = req.body.discount || course.discount,
+        course.price = req.body.price || course.price,
         course.category_id = req.body.category_id || course.category_id;
         course.lecturer_id = req.body.lecturer_id || course.lecturer_id;
         course.content = req.body.content || course.content;

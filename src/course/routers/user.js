@@ -36,14 +36,23 @@ router.get('/enroll/:id', async (req, res) => {
 
 router.post('/enroll', async (req, res) => {
     try {
-        const course = req.body.course || null;
-        let user = await UserModel.findById(req.user._id);
+        const id = req.body.course || null;
+        const course = await CourseModel.findOne({"_id": id});
+        console.log("id", id);
+        console.log(course);
 
+        let user = await UserModel.findById(req.user._id);
         let enrolled = user.enrolled;
-        if (enrolled.includes(course))
+        if (enrolled.includes(id))
             return sendResponse(res, false, "This course have been enrolled already.");
-        enrolled.push(course);
+
+        let price = course.price * (1 - course.discount);
+        if (user.balance - price < 0)
+            return sendResponse(res, false, "Not enough balance to enroll this course.");
+
+        enrolled.push(id);
         user.enrolled = enrolled;
+        user.balance = user.balance - price;
 
         await user.save();
         return sendResponse(res, true, "Enroll course successfully.");
