@@ -30,4 +30,22 @@ export default {
             "data": "Update profile successfully."
         });
     },
+    resetPassword: async (req, res, next) => {
+        const userId = req.user._id;
+        let user = await UserModel.findById(userId);
+        if (req.body.password) user.password = req.body.password;
+        else return res.json({
+            "success": false,
+            "data": "Please provide new password."
+        });
+        
+        console.log("waiting to save");
+        await user.save();
+        console.log("saved.");
+
+        return res.status(200).json({
+            "success": true,
+            "data": "Reset password successfully."
+        });
+    },
 }

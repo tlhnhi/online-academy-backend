@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt-nodejs';
+import bcrypt from 'bcrypt';
 
 // Define the model
 const Schema = new mongoose.Schema({
@@ -42,16 +42,13 @@ const Schema = new mongoose.Schema({
 Schema.pre('save', function(next) {
     // get access to user model, then we can use user.email, user.password
     const user = this;
+    if (user.password === undefined) next();
 
-    bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(user.password, 10, function(err, hash) {
         if (err) { return next(err) }
 
-        bcrypt.hash(user.password, salt, null, function(err, hash) {
-            if (err) { return next(err); }
-
-            user.password = hash;
-            next()
-        })
+        user.password = hash;
+        next();
     })
 })
 

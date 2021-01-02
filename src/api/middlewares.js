@@ -15,7 +15,7 @@ export default {
         success: false,
         message: err
       });
-      UserModel.findById(payload.sub)
+      UserModel.findById(payload.sub).select("_id")
         .exec((err, user) => {
           if (err || !user) {
               return res.status(404).json({

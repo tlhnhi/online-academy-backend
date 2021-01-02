@@ -41,7 +41,7 @@ router.post('/enroll', async (req, res) => {
         console.log("id", id);
         console.log(course);
 
-        let user = await UserModel.findById(req.user._id);
+        let user = await UserModel.findById(req.user._id).select("enrolled balance");
         let enrolled = user.enrolled;
         if (enrolled.includes(id))
             return sendResponse(res, false, "This course have been enrolled already.");
@@ -66,7 +66,7 @@ router.put('/enroll', async (req, res) => {
     try {
         const courses = req.body.courses || null;
         const userId = req.user._id;
-        let user = await UserModel.findById(userId);
+        let user = await UserModel.findById(userId).select("enrolled");
 
         user.enrolled = courses;
         await user.save();
