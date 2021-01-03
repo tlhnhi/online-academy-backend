@@ -4,7 +4,7 @@ import UserModel from '../../user/model';
 
 const router = require('express').Router();
 
-router.get('/enroll', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const userId = req.user._id;
         let user = await UserModel.findById(userId).select("enrolled");
@@ -14,7 +14,6 @@ router.get('/enroll', async (req, res) => {
             courses.push(course);
             console.log(courses);
         }));
-        console.log("ok");
         return sendResponse(res, true, courses);
     }
     catch (error) {
@@ -22,7 +21,7 @@ router.get('/enroll', async (req, res) => {
     }
 });
 
-router.get('/enroll/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         let enrolled = false;
@@ -38,7 +37,7 @@ router.get('/enroll/:id', async (req, res) => {
     }
 });
 
-router.post('/enroll', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const id = req.body.course || null;
         const course = await CourseModel.findOne({"_id": id});
@@ -66,7 +65,7 @@ router.post('/enroll', async (req, res) => {
     }
 });
 
-router.put('/enroll', async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const courses = req.body.courses || null;
         const userId = req.user._id;

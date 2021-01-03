@@ -11,7 +11,8 @@ import Authentication from './api/authentication';
 import UserRouter from './user/router';
 import CategoryRouter from './category/router';
 import AdminCourseRouter from './course/routers/admin';
-import UserCourseRouter from './course/routers/user';
+import EnrollCourseRouter from './course/routers/userEnroll';
+import FavoriteCourseRouter from './course/routers/userFavorite';
 
 if (!process.env.JWT_SECRET) {
     const err = new Error('No JWT_SECRET in env variable');
@@ -42,8 +43,9 @@ app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'succe
 
 app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', CategoryRouter);
-app.use('/course', Middlewares.loginRequired, UserCourseRouter);
-app.use('/courses', AdminCourseRouter);
+app.use('/course/enroll', Middlewares.loginRequired, EnrollCourseRouter);
+app.use('/course/favorite', Middlewares.loginRequired, FavoriteCourseRouter);
+app.use('/course', AdminCourseRouter);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);

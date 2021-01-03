@@ -4,8 +4,7 @@ export const RatingSchema = mongoose.Schema({
     user_id: {
         type: String,
         ref: 'User',
-        required: true,
-        unique: true
+        required: true
     },
     comment: {
         type: String,
