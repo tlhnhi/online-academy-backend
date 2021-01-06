@@ -29,6 +29,10 @@ const Schema = new mongoose.Schema({
         type: Number,
         default: 1000000
     },
+    isLecturer: {
+        type: Boolean,
+        default: false
+    },
     favorite: {
         type: [mongoose.Schema.ObjectId],
         default: []

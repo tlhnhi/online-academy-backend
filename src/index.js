@@ -14,6 +14,8 @@ import AdminCourseRouter from './course/routers/admin';
 import EnrollCourseRouter from './course/routers/userEnroll';
 import FavoriteCourseRouter from './course/routers/userFavorite';
 
+import UserController from './user/controller';
+
 if (!process.env.JWT_SECRET) {
     const err = new Error('No JWT_SECRET in env variable');
     console.error(err);
@@ -34,8 +36,8 @@ mongoose.Promise = global.Promise;
 // App Setup
 app.use(cors());
 app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 app.get('/', (req, res) => res.json({'connect': 'success'}));
 app.post('/signup', Authentication.signup);
 app.post('/signin', Authentication.signin);
@@ -46,6 +48,8 @@ app.use('/category', CategoryRouter);
 app.use('/course/enroll', Middlewares.loginRequired, EnrollCourseRouter);
 app.use('/course/favorite', Middlewares.loginRequired, FavoriteCourseRouter);
 app.use('/course', AdminCourseRouter);
+
+app.post('/reset-password', UserController.resetPassword);
 
 app.use((err, req, res, next) => {
     console.log('Error:', err.message);

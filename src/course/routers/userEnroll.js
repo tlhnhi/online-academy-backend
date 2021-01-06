@@ -41,8 +41,8 @@ router.post('/', async (req, res) => {
     try {
         const id = req.body.course || null;
         const course = await CourseModel.findOne({"_id": id});
-        console.log("id", id);
-        console.log(course);
+        if (course.lecturer_id.toString() === req.user._id.toString())
+            return sendResponse(res, false, "You are this course's lecturer...");
 
         let user = await UserModel.findById(req.user._id).select("enrolled balance");
         let enrolled = user.enrolled;
