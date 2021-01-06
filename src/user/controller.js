@@ -36,7 +36,7 @@ export default {
         if (req.body.password) user.password = req.body.password;
         else return res.json({
             "success": false,
-            "data": "Please provide new password."
+            "message": "Please provide new password."
         });
         
         await user.save();
