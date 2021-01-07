@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
         await Promise.all(user.favorite.map(async id => {
             let course = await CourseModel.findOne({"_id": id});
             courses.push(course);
-            console.log(courses);
         }));
         return sendResponse(res, true, courses);
     }
@@ -40,8 +39,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const id = req.body.course || null;
-        const course = await CourseModel.findOne({"_id": id});
-        console.log("id", id);
+        const course = await CourseModel.findById(id);
         console.log(course);
 
         let user = await UserModel.findById(req.user._id).select("favorite");

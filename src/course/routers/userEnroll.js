@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
         await Promise.all(user.enrolled.map(async id => {
             let course = await CourseModel.findOne({"_id": id});
             courses.push(course);
-            console.log(courses);
         }));
         return sendResponse(res, true, courses);
     }

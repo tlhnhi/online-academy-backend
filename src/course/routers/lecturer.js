@@ -5,7 +5,7 @@ const router = require('express').Router();
 
 router.get('/', async (req, res) => {
     try {
-        const course = await CourseModel.find({});
+        const course = await CourseModel.find({"lecturer_id": req.user._id});
         return sendResponse(res, true, course);
     }
     catch (error) {
@@ -13,10 +13,27 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         const course = await CourseModel.findById(id);
+
+        if (req.user._id.toString() !== course.lecturer_id.toString())
+            return sendResponse(res, false, "Permission denied.");
+
+        const content = req.body.content || null,
+            title = req.body.title || null,
+            preview = req.body.preview || null,
+            video = req.body.video || null,
+            duration = req.body.duration || null;
+
+        if (content !== null)
+            course.content = [...new Set([...course.content ,...content])];
+        else course.content.push({title, preview, video, duration});
+
+        console.log("course.content.", course.content);
+
+        await course.save();
         return sendResponse(res, true, course);
     }
     catch (error) {
@@ -26,6 +43,9 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
+        if (!req.user.isLecturer)
+            return sendResponse(res, true, "Only lecturer allow to create a course.");
+
         const title = req.body.title || null,
             avatar = req.body.avatar || null,
             describe = req.body.describe || null,
@@ -33,8 +53,8 @@ router.post('/', async (req, res) => {
             price = req.body.pice || 0,
             discount = req.body.discount || 0,
             category_id = req.body.category_id || null,
-            lecturer_id = req.body.lecturer_id || null,
-            content = req.body.content || [];
+            content = req.body.content || [],
+            lecturer_id = req.user._id;
 
         const newCourse = new CourseModel({ title, avatar, describe, detail, price, discount, lecturer_id, category_id, content });
         const course = await newCourse.save();
@@ -55,15 +75,16 @@ router.put('/:id', async (req, res) => {
             return sendResponse(res, false, "Discount value should be between 0 to 1.");
         course.discount = discount;
 
+        if (req.user._id.toString() !== course.lecturer_id.toString())
+            return sendResponse(res, false, "Permission denied.");
+
         course.title = req.body.title || course.title;
         course.avatar = req.body.avatar || course.avatar;
         course.describe = req.body.describe || course.describe,
         course.detail = req.body.detail || course.detail,
         course.price = req.body.price || course.price,
         course.category_id = req.body.category_id || course.category_id;
-        course.lecturer_id = req.body.lecturer_id || course.lecturer_id;
         course.content = req.body.content || course.content;
-        course.rating = req.body.rating || course.rating;
 
         await course.save();
         return sendResponse(res, true, course);
@@ -76,7 +97,11 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
-        const course = await CourseModel.deleteOne({"_id": id});
+        let course = await CourseModel.findById(id);
+        if (req.user._id.toString() !== course.lecturer_id.toString())
+            return sendResponse(res, false, "Permission denied.");
+
+        course = await CourseModel.deleteOne({"_id": id});
         return sendResponse(res, true, course);
     }
     catch (error) {

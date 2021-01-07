@@ -13,6 +13,7 @@ import CategoryRouter from './category/router';
 import AdminCourseRouter from './course/routers/admin';
 import EnrollCourseRouter from './course/routers/userEnroll';
 import FavoriteCourseRouter from './course/routers/userFavorite';
+import LecturerRouter from './course/routers/lecturer';
 
 import UserController from './user/controller';
 
@@ -47,6 +48,7 @@ app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', CategoryRouter);
 app.use('/course/enroll', Middlewares.loginRequired, EnrollCourseRouter);
 app.use('/course/favorite', Middlewares.loginRequired, FavoriteCourseRouter);
+app.use('/course/lecturer', Middlewares.loginRequired, LecturerRouter);
 app.use('/course', AdminCourseRouter);
 
 app.post('/reset-password', UserController.resetPassword);

@@ -14,4 +14,4 @@ export const RatingSchema = mongoose.Schema({
         type: Number,
         required: true
     }
-}, { id: false, collation: { locale: 'vi' } })
+}, { _id: false, collation: { locale: 'vi' } })

@@ -5,6 +5,10 @@ export const ContentSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    preview: {
+        type: Boolean,
+        default: false
+    },
     video: {
         type: String,
         default: null
@@ -13,4 +17,4 @@ export const ContentSchema = mongoose.Schema({
         type: Number,
         default: 0
     }
-}, { id: false, collation: { locale: 'vi' } })
+}, { _id: false, collation: { locale: 'vi' } })
