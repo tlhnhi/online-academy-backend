@@ -69,6 +69,8 @@ router.put('/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         const course = await CourseModel.findById(id);
+        if (course === null)
+            return sendResponse(res, false, "This course doesn't exist.");
 
         let discount = req.body.discount;
         if (discount < 0 || discount > 1)
@@ -98,6 +100,9 @@ router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         let course = await CourseModel.findById(id);
+        if (course === null)
+            return sendResponse(res, false, "This course doesn't exist.");
+
         if (req.user._id.toString() !== course.lecturer_id.toString())
             return sendResponse(res, false, "Permission denied.");
 

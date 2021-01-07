@@ -40,8 +40,8 @@ router.post('/', async (req, res) => {
     try {
         const id = req.body.course || null;
         const course = await CourseModel.findById(id);
-        console.log(course);
-
+        if (course === null)
+            return sendResponse(res, false, "This course doesn't exist.");
         let user = await UserModel.findById(req.user._id).select("favorite");
         let favorite = user.favorite;
         if (favorite.includes(id))

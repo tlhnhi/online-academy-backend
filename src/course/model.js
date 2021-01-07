@@ -50,7 +50,10 @@ const Schema = new mongoose.Schema({
         type: [RatingSchema],
         default: []
     }
-}, { collation: { locale: 'vi' } })
+}, {
+    timestamps: true,
+    collation: { locale: 'vi' }
+})
 
 // Export the model
 export default mongoose.model('Course', Schema);

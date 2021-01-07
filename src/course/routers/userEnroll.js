@@ -40,6 +40,9 @@ router.post('/', async (req, res) => {
     try {
         const id = req.body.course || null;
         const course = await CourseModel.findOne({"_id": id});
+        if (course === null)
+            return sendResponse(res, false, "This course doesn't exist.");
+            
         if (course.lecturer_id.toString() === req.user._id.toString())
             return sendResponse(res, false, "You are this course's lecturer...");
 

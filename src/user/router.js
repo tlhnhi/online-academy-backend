@@ -31,6 +31,28 @@ router.get('/users', async (req, res) => {
     });
 });
 
+router.post('/users', async (req, res) => {
+    const userEmail = req.user.email;
+    if (userEmail !== "quack@domain.com") {
+        return res.json({
+            "success": false,
+            "message": "Please log in with admin account ( ')>"
+        });
+    }
+    const email = req.body.email || null,
+        password = req.body.password || null,
+        name = req.body.name || "unamed",
+        isLecturer = true;
+
+    const newUser = new UserModel({ email, password, name, isLecturer });
+    const user = await newUser.save();
+    return res.json({
+        "success": true,
+        "data": user
+    });
+});
+
+
 router.put('/users/:id', async (req, res) => {
     const id = req.params.id || null;
     const user = await UserModel.findById(id);
@@ -42,6 +64,7 @@ router.put('/users/:id', async (req, res) => {
             "message": "Please log in with admin account ( ')>"
         });
     }
+    user.email = req.body.email || user.email;
     user.name = req.body.name || user.name;
     user.avatar = req.body.avatar || user.avatar;
     user.balance = req.body.balance || user.balance;
