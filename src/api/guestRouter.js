@@ -5,7 +5,7 @@ import CourseModel from '../course/model';
 
 const router = require('express').Router();
 
-router.get('/user', async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
         const user = await UserModel.find({}).select("-password -__v");
         return sendResponse(res, true, user);
@@ -15,7 +15,7 @@ router.get('/user', async (req, res) => {
     }
 });
 
-router.get('/user/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
         const user = await UserModel.findById(id).select("-password -__v");

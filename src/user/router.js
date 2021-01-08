@@ -16,21 +16,6 @@ router.get('/profile', async (req, res) => {
 router.post('/profile', UserController.updateProfile);
 router.post('/password', UserController.updatePassword);
 
-router.get('/users', async (req, res) => {
-    const userEmail = req.user.email;
-    if (userEmail !== "quack@domain.com") {
-        return res.json({
-            "success": false,
-            "message": "Please log in with admin account ( ')>"
-        });
-    }
-    let users = await UserModel.find({}).select("-password -__v");
-    return res.json({
-        "success": true,
-        "data": users
-    });
-});
-
 router.post('/users', async (req, res) => {
     const userEmail = req.user.email;
     if (userEmail !== "quack@domain.com") {
@@ -55,7 +40,7 @@ router.post('/users', async (req, res) => {
 
 router.put('/users/:id', async (req, res) => {
     const id = req.params.id || null;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).select("-password -__v");
 
     const email = req.user.email;
     if (email !== "quack@domain.com") {
