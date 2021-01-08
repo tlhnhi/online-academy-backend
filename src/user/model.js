@@ -23,7 +23,7 @@ const Schema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: null
+        default: "https://d11a6trkgmumsb.cloudfront.net/original/3X/d/8/d8b5d0a738295345ebd8934b859fa1fca1c8c6ad.jpeg?fbclid=IwAR3drm7_Vca3wpXl__C_tyCjYyrKOhr7xO704Q0E1l5Y1nJz6TC-VGnTec8"
     },
     balance: {
         type: Number,

@@ -16,7 +16,7 @@ router.get('/profile', async (req, res) => {
 router.post('/profile', UserController.updateProfile);
 router.post('/password', UserController.updatePassword);
 
-router.post('/users', async (req, res) => {
+router.post('/', async (req, res) => {
     const userEmail = req.user.email;
     if (userEmail !== "quack@domain.com") {
         return res.json({
@@ -38,7 +38,7 @@ router.post('/users', async (req, res) => {
 });
 
 
-router.put('/users/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     const id = req.params.id || null;
     const user = await UserModel.findById(id).select("-password -__v");
 
@@ -62,7 +62,7 @@ router.put('/users/:id', async (req, res) => {
     });
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const id = req.params.id || null;
 
     const email = req.user.email;
