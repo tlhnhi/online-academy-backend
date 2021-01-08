@@ -33,6 +33,10 @@ const Schema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    description: {
+        type: String,
+        default: ""
+    },
     favorite: {
         type: [mongoose.Schema.ObjectId],
         default: []

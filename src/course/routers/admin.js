@@ -3,29 +3,11 @@ import CourseModel from '../model';
 
 const router = require('express').Router();
 
-router.get('/', async (req, res) => {
-    try {
-        const course = await CourseModel.find({});
-        return sendResponse(res, true, course);
-    }
-    catch (error) {
-        return handleError(res, error, "Get error");
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const id = req.params.id || null;
-        const course = await CourseModel.findById(id);
-        return sendResponse(res, true, course);
-    }
-    catch (error) {
-        return handleError(res, error, "Get error");
-    }
-});
-
 router.post('/', async (req, res) => {
     try {
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
         const title = req.body.title || null,
             avatar = req.body.avatar || null,
             describe = req.body.describe || null,
@@ -47,6 +29,10 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
+        
         const id = req.params.id || null;
         const course = await CourseModel.findById(id);
         if (course === null)
@@ -77,6 +63,10 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
+            
         const id = req.params.id || null;
         const course = await CourseModel.deleteOne({"_id": id});
         return sendResponse(res, true, course);

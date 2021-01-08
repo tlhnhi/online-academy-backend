@@ -3,31 +3,13 @@ import CategoryModel from './model';
 
 const router = require('express').Router();
 
-router.get('/', async (req, res) => {
-    try {
-        const category = await CategoryModel.find({});
-        return sendResponse(res, true, category);
-    }
-    catch (error) {
-        return handleError(res, error, "Get error");
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const id = req.params.id || null;
-        const category = await CategoryModel.findOne({"_id": id});
-        return sendResponse(res, true, category);
-    }
-    catch (error) {
-        return handleError(res, error, "Get error");
-    }
-});
-
 router.post('/', async (req, res) => {
     try {
-        const { name, parent } = req.body;
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
 
+        const { name, parent } = req.body;
         const newCategory = new CategoryModel({ name, parent });
         const category = await newCategory.save();
         return sendResponse(res, true, category);
@@ -39,15 +21,19 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
+
         const id = req.params.id || null;
         const parent = req.body.parent;
 
-        const category = await CategoryModel.findOne({"_id": id});
+        const category = await CategoryModel.findById(id);
 
         if (parent !== undefined) {
             let _id = parent;
             while (_id !== null) {
-                let cat = await CategoryModel.findOne({"_id": _id});
+                let cat = await CategoryModel.findById(_id);
                 if (cat === null)
                     return sendResponse(res, false, "Parent category not found");
                 _id = cat.parent;
@@ -68,6 +54,10 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
+        const userEmail = req.user.email;
+        if (userEmail !== "quack@domain.com")
+            return sendResponse(res, false, "Please log in with admin account ( ')>");
+        
         const id = req.params.id || null;
         const category = await CategoryModel.deleteOne({"_id": id});
         return sendResponse(res, true, category);

@@ -7,6 +7,7 @@ import cors from 'cors';
 import config from './config';
 import Middlewares from './api/middlewares';
 import Authentication from './api/authentication';
+import GuestRouter from './api/guestRouter';
 
 import UserRouter from './user/router';
 import CategoryRouter from './category/router';
@@ -44,12 +45,13 @@ app.post('/signup', Authentication.signup);
 app.post('/signin', Authentication.signin);
 app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'success': true }));
 
+app.use('/', GuestRouter);
 app.use('/user', Middlewares.loginRequired, UserRouter);
-app.use('/category', CategoryRouter);
+app.use('/category', Middlewares.loginRequired, CategoryRouter);
 app.use('/course/enroll', Middlewares.loginRequired, EnrollCourseRouter);
 app.use('/course/favorite', Middlewares.loginRequired, FavoriteCourseRouter);
 app.use('/course/lecturer', Middlewares.loginRequired, LecturerRouter);
-app.use('/course', AdminCourseRouter);
+app.use('/course', Middlewares.loginRequired, AdminCourseRouter);
 
 app.post('/reset-password', UserController.resetPassword);
 
