@@ -1,12 +1,16 @@
 import { sendResponse, handleError } from '../../util/response';
+import { convert } from '../../util/courseConvert';
 import CourseModel from '../model';
 
 const router = require('express').Router();
 
 router.get('/', async (req, res) => {
     try {
-        const course = await CourseModel.find({"lecturer_id": req.user._id});
-        return sendResponse(res, true, course);
+        const courses = await CourseModel
+                    .find({"lecturer_id": req.user._id})
+                    .select("-__v");
+        const courseObjs = await convert(courses);
+        return sendResponse(res, true, courseObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");

@@ -1,12 +1,29 @@
 import UserController from './controller';
 import UserModel from './model';
+import { convert } from '../util/courseConvert';
+import CourseModel from '../course/model';
 
 const router = require('express').Router();
 
 router.get('/profile', async (req, res) => {
-    const userId = req.user._id;
-    let user = await UserModel.findById(userId).select("-password -__v");
-    let userObj = user.toJSON();
+    const id = req.user._id;
+    const user = await UserModel.findById(id)
+                                .select("-password -__v");
+
+    const courses = await CourseModel.find({"lecturer_id": id})
+                                        .select("-lecturer_id -__v");
+
+    const userObj = user.toObject();
+    userObj.courses = await convert(courses);
+
+    let star = 0, enrollments = 0;
+    for (let i = 0; i < courses.length; i++) {
+        console.log("courses[i].star", courses[i].star);
+        star += userObj.courses[i].star;
+        enrollments += userObj.courses[i].enrollments;
+    }
+    userObj.star = star;
+    userObj.enrollments = enrollments;
     res.json({
         "success": true,
         "data": userObj
@@ -27,9 +44,11 @@ router.post('/', async (req, res) => {
     const email = req.body.email || null,
         password = req.body.password || null,
         name = req.body.name || "unamed",
+        description = req.body.description || "",
+        avatar = req.body.avatar || "https://d11a6trkgmumsb.cloudfront.net/original/3X/d/8/d8b5d0a738295345ebd8934b859fa1fca1c8c6ad.jpeg?fbclid=IwAR3drm7_Vca3wpXl__C_tyCjYyrKOhr7xO704Q0E1l5Y1nJz6TC-VGnTec8",
         isLecturer = true;
 
-    const newUser = new UserModel({ email, password, name, isLecturer });
+    const newUser = new UserModel({ avatar, email, password, name, isLecturer, description });
     const user = await newUser.save();
     return res.json({
         "success": true,
@@ -52,6 +71,7 @@ router.put('/:id', async (req, res) => {
     user.email = req.body.email || user.email;
     user.name = req.body.name || user.name;
     user.avatar = req.body.avatar || user.avatar;
+    user.description = req.body.description || user.description;
     user.balance = req.body.balance || user.balance;
     user.isLecturer = req.body.isLecturer || user.isLecturer;
     

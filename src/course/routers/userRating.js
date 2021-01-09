@@ -1,5 +1,7 @@
 import { sendResponse, handleError } from '../../util/response';
+import { convert } from '../../util/courseConvert';
 import CourseModel from '../model';
+import UserModel from '../../user/model';
 
 const router = require('express').Router();
 
@@ -9,7 +11,8 @@ router.get('/', async (req, res) => {
         const courses = await CourseModel
             .find({rating: {$elemMatch: {user_id: userId}}})
             .select("-content -__v");
-        return sendResponse(res, true, courses);
+        const courseObjs = await convert(courses);
+        return sendResponse(res, true, courseObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
@@ -51,6 +54,11 @@ router.post('/', async (req, res) => {
             for (let i = 0; i < course.rating.length; i++)
                 if (course.rating[i].user_id.toString() === user_id.toString())
                     return sendResponse(res, false, "You have rated this course.");
+
+        let user = await UserModel.findById(user_id).select("favorite");
+        if (!user.enrolled.includes(id))
+            return sendResponse(res, false, "You must enroll before giving a rate to this course.");
+        
 
         const star = req.body.star || null,
             comment = req.body.comment || "";

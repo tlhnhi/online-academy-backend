@@ -1,4 +1,5 @@
 import { sendResponse, handleError } from '../util/response';
+import { convert } from '../util/courseConvert';
 import CategoryModel from '../category/model';
 import UserModel from '../user/model';
 import CourseModel from '../course/model';
@@ -18,8 +19,25 @@ router.get('/users', async (req, res) => {
 router.get('/users/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
-        const user = await UserModel.findById(id).select("-password -__v");
-        return sendResponse(res, true, user);
+        const user = await UserModel.findById(id)
+                                    .select("-password -__v");
+
+        const courses = await CourseModel.find({"lecturer_id": id})
+                                            .select("-lecturer_id -__v");
+
+        const userObj = user.toObject();
+        userObj.courses = await convert(courses);
+
+        let star = 0, enrollments = 0;
+        for (let i = 0; i < courses.length; i++) {
+            console.log("courses[i].star", courses[i].star);
+            star += userObj.courses[i].star;
+            enrollments += userObj.courses[i].enrollments;
+        }
+        userObj.star = star;
+        userObj.enrollments = enrollments;
+
+        return sendResponse(res, true, userObj);
     }
     catch (error) {
         return handleError(res, error, "Get error");
@@ -39,10 +57,16 @@ router.get('/category', async (req, res) => {
 router.get('/category/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
-        const category = await CategoryModel.findById(id);
+        const category = await CategoryModel.findById(id).select("-__v");
 
         const cat = category.toObject();
-        cat.courses = await CourseModel.find({category_id: id}).select("-content -__v");
+        if (cat === null)
+            return sendResponse(res, false, "This category doesn't exist.");
+        const courses = await CourseModel.find({category_id: id})
+                                        .select("-content -category_id -__v");
+
+        const courseObjs = await convert(courses);
+        cat.courses = courseObjs;
         return sendResponse(res, true, cat);
     }
     catch (error) {
@@ -53,19 +77,8 @@ router.get('/category/:id', async (req, res) => {
 router.get('/course', async (req, res) => {
     try {
         const courses = await CourseModel.find({}).select("-content -__v");
-        const objs = [];
-        let obj = null, star;
-        for (let i = 0; i < courses.length; i++) {
-            obj = courses[i].toObject();
-            star = 0;
-            for (let j = 0; j < obj.rating.length; j++)
-                star += obj.rating[j].star;
-
-            if (obj.rating.length === 0) obj.star = star;
-            else obj.star = star / obj.rating.length;
-            objs.push(obj);
-        }
-        return sendResponse(res, true, objs);
+        const courseObjs = await convert(courses);
+        return sendResponse(res, true, courseObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
@@ -78,12 +91,30 @@ router.get('/course/:id', async (req, res) => {
         const course = await CourseModel.findById(id).select("-__v");
 
         const courseObj = course.toObject();
-        let star = 0;
-        for (let i = 0; i < course.rating.length; i++)
-            star += course.rating[i].star;
 
+        // Calculate star
+        let star = 0;
+        for (let i = 0; i < course.rating.length; i++) {
+            star += course.rating[i].star;
+            courseObj.rating[i].user = await UserModel
+                                        .findById(courseObj.rating[i].user_id)
+                                        .select("-password -__v");
+            delete courseObj.rating[i].user_id;
+        }
         if (course.rating.length === 0) courseObj.star = star;
         else courseObj.star = star / course.rating.length;
+
+        // Get lecturer, category info
+        courseObj.lecturer = await UserModel.findById(courseObj.lecturer_id)
+                            .select("-password -__v");
+        delete courseObj.lecturer_id;
+        courseObj.category = await CategoryModel.findById(courseObj.category_id)
+                            .select("-__v");
+        delete courseObj.category_id;
+
+        // Count enrollments
+        const enrollments = await UserModel.find({enrolled: courseObj._id});
+        courseObj.enrollments = enrollments.length;
 
         return sendResponse(res, true, courseObj);
     }

@@ -1,4 +1,5 @@
 import { sendResponse, handleError } from '../../util/response';
+import { convert } from '../../util/courseConvert';
 import CourseModel from '../model';
 import UserModel from '../../user/model';
 
@@ -10,10 +11,11 @@ router.get('/', async (req, res) => {
         let user = await UserModel.findById(userId).select("enrolled");
         let courses = [];
         await Promise.all(user.enrolled.map(async id => {
-            let course = await CourseModel.findOne({"_id": id});
+            let course = await CourseModel.findOne({"_id": id}).select("-__v");
             courses.push(course);
         }));
-        return sendResponse(res, true, courses);
+        const courseObjs = await convert(courses);
+        return sendResponse(res, true, courseObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
