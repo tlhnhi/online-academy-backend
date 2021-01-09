@@ -14,11 +14,14 @@ router.post('/', async (req, res) => {
             detail = req.body.detail || null,
             price = req.body.pice || 0,
             discount = req.body.discount || 0,
+            done = req.body.done || false,
             category_id = req.body.category_id || null,
             lecturer_id = req.body.lecturer_id || null,
             content = req.body.content || [];
 
-        const newCourse = new CourseModel({ title, avatar, describe, detail, price, discount, lecturer_id, category_id, content });
+        const newCourse = new CourseModel({
+            title, avatar, describe, detail, price, discount, done, lecturer_id, category_id, content
+        });
         const course = await newCourse.save();
         return sendResponse(res, true, course);
     }
@@ -48,6 +51,7 @@ router.put('/:id', async (req, res) => {
         course.describe = req.body.describe || course.describe,
         course.detail = req.body.detail || course.detail,
         course.price = req.body.price || course.price,
+        course.done = req.body.done || course.done,
         course.category_id = req.body.category_id || course.category_id;
         course.lecturer_id = req.body.lecturer_id || course.lecturer_id;
         course.content = req.body.content || course.content;

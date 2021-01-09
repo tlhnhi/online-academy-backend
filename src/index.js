@@ -48,9 +48,9 @@ app.get('/auth-ping', Middlewares.loginRequired, (req, res) => res.json({ 'succe
 app.use('/', GuestRouter);
 app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', Middlewares.loginRequired, CategoryRouter);
-app.use('/course/enroll', Middlewares.loginRequired, EnrollCourseRouter);
-app.use('/course/favorite', Middlewares.loginRequired, FavoriteCourseRouter);
-app.use('/course/lecturer', Middlewares.loginRequired, LecturerRouter);
+app.use('/course-enroll', Middlewares.loginRequired, EnrollCourseRouter);
+app.use('/course-favorite', Middlewares.loginRequired, FavoriteCourseRouter);
+app.use('/course-lecturer', Middlewares.loginRequired, LecturerRouter);
 app.use('/course', Middlewares.loginRequired, AdminCourseRouter);
 
 app.post('/reset-password', UserController.resetPassword);

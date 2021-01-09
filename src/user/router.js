@@ -13,8 +13,8 @@ router.get('/profile', async (req, res) => {
     });
 });
 
-router.post('/profile', UserController.updateProfile);
-router.post('/password', UserController.updatePassword);
+router.put('/profile', UserController.updateProfile);
+router.put('/password', UserController.updatePassword);
 
 router.post('/', async (req, res) => {
     const userEmail = req.user.email;
