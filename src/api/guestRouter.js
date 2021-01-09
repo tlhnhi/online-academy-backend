@@ -28,7 +28,7 @@ router.get('/users/:id', async (req, res) => {
 
 router.get('/category', async (req, res) => {
     try {
-        const category = await CategoryModel.find({});
+        const category = await CategoryModel.find({}).select("-__v");
         return sendResponse(res, true, category);
     }
     catch (error) {
@@ -42,7 +42,7 @@ router.get('/category/:id', async (req, res) => {
         const category = await CategoryModel.findById(id);
 
         const cat = category.toObject();
-        cat.courses = await CourseModel.find({category_id: id});
+        cat.courses = await CourseModel.find({category_id: id}).select("-content -__v");
         return sendResponse(res, true, cat);
     }
     catch (error) {
@@ -52,8 +52,20 @@ router.get('/category/:id', async (req, res) => {
 
 router.get('/course', async (req, res) => {
     try {
-        const course = await CourseModel.find({});
-        return sendResponse(res, true, course);
+        const courses = await CourseModel.find({}).select("-content -__v");
+        const objs = [];
+        let obj = null, star;
+        for (let i = 0; i < courses.length; i++) {
+            obj = courses[i].toObject();
+            star = 0;
+            for (let j = 0; j < obj.rating.length; j++)
+                star += obj.rating[j].star;
+
+            if (obj.rating.length === 0) obj.star = star;
+            else obj.star = star / obj.rating.length;
+            objs.push(obj);
+        }
+        return sendResponse(res, true, objs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
@@ -63,8 +75,17 @@ router.get('/course', async (req, res) => {
 router.get('/course/:id', async (req, res) => {
     try {
         const id = req.params.id || null;
-        const course = await CourseModel.findById(id);
-        return sendResponse(res, true, course);
+        const course = await CourseModel.findById(id).select("-__v");
+
+        const courseObj = course.toObject();
+        let star = 0;
+        for (let i = 0; i < course.rating.length; i++)
+            star += course.rating[i].star;
+
+        if (course.rating.length === 0) courseObj.star = star;
+        else courseObj.star = star / course.rating.length;
+
+        return sendResponse(res, true, courseObj);
     }
     catch (error) {
         return handleError(res, error, "Get error");

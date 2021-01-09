@@ -8,10 +8,14 @@ export const RatingSchema = mongoose.Schema({
     },
     comment: {
         type: String,
-        default: null
+        default: ""
     },
     star: {
         type: Number,
-        required: true
+        required: true,
+        get: v => Math.round(v),
+        set: v => Math.round(v),
+        min: [1, "Ít nhất cũng cho 1 sao chứ??"],
+        max: [5, "Max là 5 sao thôi quỷ"]
     }
 }, { _id: false, collation: { locale: 'vi' } })

@@ -22,11 +22,14 @@ const Schema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        default: 0
+        default: 0,
+        min: 0
     },
     discount: {
         type: Number,
-        default: 0
+        default: 0,
+        min: [0, "Giảm âm là tăng giá hả??"],
+        max: [1, "Tối đa 1 (tức 100%) thôi là free rồi"]
     },
     lecturer_id: {
         type: mongoose.Schema.ObjectId,
@@ -54,6 +57,12 @@ const Schema = new mongoose.Schema({
     timestamps: true,
     collation: { locale: 'vi' }
 })
+
+Schema.index({
+    title: 'text',
+    describe: 'text',
+    detail: 'text',
+});
 
 // Export the model
 export default mongoose.model('Course', Schema);

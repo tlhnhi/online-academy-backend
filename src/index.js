@@ -14,6 +14,7 @@ import CategoryRouter from './category/router';
 import AdminCourseRouter from './course/routers/admin';
 import EnrollCourseRouter from './course/routers/userEnroll';
 import FavoriteCourseRouter from './course/routers/userFavorite';
+import RatingCourseRouter from './course/routers/userRating';
 import LecturerRouter from './course/routers/lecturer';
 
 import UserController from './user/controller';
@@ -50,6 +51,7 @@ app.use('/user', Middlewares.loginRequired, UserRouter);
 app.use('/category', Middlewares.loginRequired, CategoryRouter);
 app.use('/course-enroll', Middlewares.loginRequired, EnrollCourseRouter);
 app.use('/course-favorite', Middlewares.loginRequired, FavoriteCourseRouter);
+app.use('/course-rating', Middlewares.loginRequired, RatingCourseRouter);
 app.use('/course-lecturer', Middlewares.loginRequired, LecturerRouter);
 app.use('/course', Middlewares.loginRequired, AdminCourseRouter);
 
