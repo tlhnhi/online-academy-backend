@@ -47,7 +47,23 @@ router.get('/users/:id', async (req, res) => {
 router.get('/category', async (req, res) => {
     try {
         const category = await CategoryModel.find({}).select("-__v");
-        return sendResponse(res, true, category);
+        let courses, enrollments, obj, objs = [];
+
+        for (let i = 0; i < category.length; i++) {
+            obj = category[i].toObject();
+            courses = await CourseModel.find({category_id: obj._id})
+                                        .select("_id");
+            obj.courses = courses.length;
+            obj.enrollments = 0;
+            for (let j = 0; j < courses.length; j++) {
+                enrollments = await UserModel
+                                .find({enrolled: courses[j]._id})
+                                .select("_id");
+                obj.enrollments += enrollments.length;
+            }
+            objs.push(obj);
+        }
+        return sendResponse(res, true, objs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
@@ -115,6 +131,10 @@ router.get('/course/:id', async (req, res) => {
         // Count enrollments
         const enrollments = await UserModel.find({enrolled: courseObj._id});
         courseObj.enrollments = enrollments.length;
+
+        // Count favours
+        const favours = await UserModel.find({favorite: courseObj._id});
+        courseObj.favours = favours.length;
 
         return sendResponse(res, true, courseObj);
     }

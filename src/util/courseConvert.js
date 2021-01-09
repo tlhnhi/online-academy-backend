@@ -12,7 +12,6 @@ export const convert = async (courses) => {
             star += obj.rating[j].star;
         if (obj.rating.length === 0) obj.star = star;
         else obj.star = star / obj.rating.length;
-        delete obj.rating;
 
         // Get lecturer, category info
         if (obj.lecturer_id !== undefined) {
@@ -30,6 +29,10 @@ export const convert = async (courses) => {
         // Count enrollments
         const enrollments = await UserModel.find({enrolled: obj._id});
         obj.enrollments = enrollments.length;
+
+        // Count favours
+        const favours = await UserModel.find({favorite: obj._id});
+        obj.favours = favours.length;
 
         objs.push(obj);
     }
