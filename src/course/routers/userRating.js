@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
                 if (course.rating[i].user_id.toString() === user_id.toString())
                     return sendResponse(res, false, "You have rated this course.");
 
-        let user = await UserModel.findById(user_id).select("favorite");
+        let user = await UserModel.findById(user_id).select("enrolled");
         if (!user.enrolled.includes(id))
             return sendResponse(res, false, "You must enroll before giving a rate to this course.");
         
