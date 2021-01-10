@@ -52,24 +52,36 @@ router.get('/users/:id', async (req, res) => {
 
 router.get('/category', async (req, res) => {
     try {
-        const category = await CategoryModel.find({}).select("-__v");
-        let courses, enrollments, obj, objs = [];
+        const parents = await CategoryModel
+                                .find({parent: null})
+                                .select("-__v");
+        let parentObjs = [], parentObj;
+        for (let k = 0; k < parents.length; k++) {
+            parentObj = parents[k].toObject();
 
-        for (let i = 0; i < category.length; i++) {
-            obj = category[i].toObject();
-            courses = await CourseModel.find({category_id: obj._id})
-                                        .select("_id");
-            obj.courses = courses.length;
-            obj.enrollments = 0;
-            for (let j = 0; j < courses.length; j++) {
-                enrollments = await UserModel
-                                .find({enrolled: courses[j]._id})
-                                .select("_id");
-                obj.enrollments += enrollments.length;
+            const category = await CategoryModel
+                                    .find({parent: parentObj._id})
+                                    .select("-__v");
+            let courses, enrollments, obj, objs = [];
+
+            for (let i = 0; i < category.length; i++) {
+                obj = category[i].toObject();
+                courses = await CourseModel.find({category_id: obj._id})
+                                            .select("_id");
+                obj.courses = courses.length;
+                obj.enrollments = 0;
+                for (let j = 0; j < courses.length; j++) {
+                    enrollments = await UserModel
+                                    .find({enrolled: courses[j]._id})
+                                    .select("_id");
+                    obj.enrollments += enrollments.length;
+                }
+                objs.push(obj);
             }
-            objs.push(obj);
+            parentObj.childs = objs;
+            parentObjs.push(parentObj);
         }
-        return sendResponse(res, true, objs);
+        return sendResponse(res, true, parentObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");
