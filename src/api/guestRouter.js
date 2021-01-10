@@ -28,14 +28,19 @@ router.get('/users/:id', async (req, res) => {
         const userObj = user.toObject();
         userObj.courses = await convert(courses);
 
-        let star = 0, enrollments = 0, ratings = 0;
+        let star = 0, numstar = 0, enrollments = 0, ratings = 0;
         for (let i = 0; i < courses.length; i++) {
             ratings += userObj.courses[i].rating.length;
-            star += userObj.courses[i].star;
             enrollments += userObj.courses[i].enrollments;
+            if (userObj.courses[i].star > 0) {
+                star += userObj.courses[i].star;
+                numstar += 1;
+            }
+
         }
+        if (numstar > 0) userObj.star = star / numstar;
+        else userObj.star = 0;
         userObj.ratings = ratings;
-        userObj.star = star / courses.length;
         userObj.enrollments = enrollments;
 
         return sendResponse(res, true, userObj);
@@ -138,6 +143,20 @@ router.get('/course/:id', async (req, res) => {
         courseObj.favours = favours.length;
 
         return sendResponse(res, true, courseObj);
+    }
+    catch (error) {
+        return handleError(res, error, "Get error");
+    }
+});
+
+router.post('/search', async (req, res) => {
+    try {
+        const keyword = req.body.keyword;
+        const courses = await CourseModel
+                            .find({$text: {$search: keyword}})
+                            .select("-content -__v");
+        const courseObjs = await convert(courses);
+        return sendResponse(res, true, courseObjs);
     }
     catch (error) {
         return handleError(res, error, "Get error");

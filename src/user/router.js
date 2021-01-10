@@ -16,15 +16,21 @@ router.get('/profile', async (req, res) => {
     const userObj = user.toObject();
     userObj.courses = await convert(courses);
 
-    let star = 0, enrollments = 0, ratings = 0;
+    let star = 0, numstar = 0, enrollments = 0, ratings = 0;
     for (let i = 0; i < courses.length; i++) {
         ratings += userObj.courses[i].rating.length;
-        star += userObj.courses[i].star;
         enrollments += userObj.courses[i].enrollments;
+        if (userObj.courses[i].star > 0) {
+            star += userObj.courses[i].star;
+            numstar += 1;
+        }
+
     }
+    if (numstar > 0) userObj.star = star / numstar;
+    else userObj.star = 0;
     userObj.ratings = ratings;
-    userObj.star = star / courses.length;
     userObj.enrollments = enrollments;
+
     res.json({
         "success": true,
         "data": userObj
