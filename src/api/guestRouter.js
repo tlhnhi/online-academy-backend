@@ -164,9 +164,12 @@ router.get('/course/:id', async (req, res) => {
 router.post('/search', async (req, res) => {
     try {
         const keyword = req.body.keyword;
-        const courses = await CourseModel
+        let courses;
+        if (keyword)
+            courses = await CourseModel
                             .find({$text: {$search: keyword}})
                             .select("-content -__v");
+        else courses = await CourseModel.find({}).select("-content -__v");
         const courseObjs = await convert(courses);
         return sendResponse(res, true, courseObjs);
     }

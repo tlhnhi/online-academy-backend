@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export const ContentSchema = mongoose.Schema({
     title: {
         type: String,
-        required: true
+        default: "Untitled"
     },
     preview: {
         type: Boolean,
@@ -11,10 +11,10 @@ export const ContentSchema = mongoose.Schema({
     },
     video: {
         type: String,
-        default: null
+        default: "https://www.youtube.com/watch?v=9S4lm9JaDDM"
     },
     duration: {
-        type: Number,
-        default: 0
+        type: String,
+        default: "0"
     }
 }, { _id: false, collation: { locale: 'vi' } })

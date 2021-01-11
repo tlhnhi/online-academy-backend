@@ -67,7 +67,7 @@ export default {
                 if (err || !existingUser) {
                     return res.status(401).json({
                         status: false,
-                        message: err['_message'] || "Incorrect Email or Password"
+                        message: err || "Incorrect Email or Password"
                     })
                 }
                 if (existingUser) {
