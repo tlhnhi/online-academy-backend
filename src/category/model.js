@@ -1,16 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 // Define the model
-const Schema = new mongoose.Schema({
+const Schema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
     parent: {
-        type: mongoose.Schema.ObjectId,
-        default: null
+      type: mongoose.Schema.ObjectId,
+      default: null
     }
-}, { collation: { locale: 'vi' } })
+  },
+  { collation: { locale: "vi" } }
+);
 
 // Export the model
-export default mongoose.model('Category', Schema);
+export default mongoose.model("Category", Schema);
