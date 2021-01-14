@@ -28,10 +28,10 @@ Including
 
 - `MONGODB_URI`: Connection string to your mongodb
 - `JWT_SECRET`: A jwt secret string
-- `EMAIL`: Your gmail from which server send OTP for signup
+- `EMAIL`: Your gmail from which server send verification email for signup
 - `PASSWORD`: Password to your gmail
 - `PORT`: (optional) - default: 8000
-- `DOMAIN`: (optional)
+- `DOMAIN`: (optional) - Host domain for verification email
 
 ### Start
 

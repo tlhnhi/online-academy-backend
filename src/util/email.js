@@ -9,9 +9,8 @@ export const sendVerify = (userToken, email) => {
     }
   });
 
-  let port = process.env.PORT || 8000;
-  let domain = process.env.DOMAIN || "http://localhost";
-  domain += ":" + port.toString();
+  const port = process.env.PORT || 8000;
+  const domain = process.env.DOMAIN || `http://localhost:${port}`;
   var mailOptions = {
     from: process.env.EMAIL || "",
     to: email,
