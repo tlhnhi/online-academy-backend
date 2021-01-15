@@ -68,6 +68,7 @@ router.put("/:id", async (req, res) => {
     course.lecturer_id = req.body.lecturer_id || course.lecturer_id;
     course.content = req.body.content || course.content;
     course.rating = req.body.rating || course.rating;
+    course.isBlocked = req.body.isBlocked || course.isBlocked;
 
     await course.save();
     return sendResponse(res, true, course);

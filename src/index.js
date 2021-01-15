@@ -31,7 +31,11 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
-    useCreateIndex: true
+    useCreateIndex: true,
+    socketOptions: {
+      socketTimeoutMS: 0,
+      connectTimeoutMS: 0
+    }
   })
   .catch(err => console.error(err));
 

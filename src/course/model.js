@@ -53,6 +53,14 @@ const Schema = new mongoose.Schema(
     rating: {
       type: [RatingSchema],
       default: []
+    },
+    view: {
+      type: Number,
+      default: 0
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false
     }
   },
   {

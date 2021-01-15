@@ -91,6 +91,7 @@ router.put("/:id", async (req, res) => {
   user.description = req.body.description || user.description;
   user.balance = req.body.balance || user.balance;
   user.isLecturer = req.body.isLecturer || user.isLecturer;
+  user.isBlocked = req.body.isBlocked || user.isBlocked;
 
   await user.save();
   return res.status(200).json({

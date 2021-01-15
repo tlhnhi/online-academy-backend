@@ -46,6 +46,10 @@ const Schema = new mongoose.Schema(
     enrolled: {
       type: [mongoose.Schema.ObjectId],
       default: []
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false
     }
   },
   { collation: { locale: "vi" } }

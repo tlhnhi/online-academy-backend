@@ -157,6 +157,8 @@ router.get("/course/:id", async (req, res) => {
   try {
     const id = req.params.id || null;
     const course = await CourseModel.findById(id).select("-__v");
+    course.view += 1;
+    await course.save();
 
     const courseObj = course.toObject();
 
