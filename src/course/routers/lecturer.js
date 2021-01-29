@@ -63,9 +63,6 @@ router.post("/", async (req, res) => {
       content = req.body.content || [],
       lecturer_id = req.user._id;
 
-    console.log("discount", discount);
-    console.log("body", req.body);
-
     const newCourse = new CourseModel({
       title,
       avatar,

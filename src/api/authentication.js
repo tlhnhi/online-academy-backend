@@ -73,6 +73,11 @@ export default {
           });
         }
         if (existingUser) {
+          if (existingUser.isBlocked)
+            return res.json({
+              status: false,
+              message: "Account is blocked. Please contact admin."
+            });
           existingUser.comparedPassword(password, function (err, good) {
             if (err || !good) {
               return res.status(401).json({
